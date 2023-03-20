@@ -2,7 +2,7 @@
 NFC based keyboard Wedge using PN532, RP2040W (Pico W), and a i2c 128x32 oled
 
 
-##Features
+## Features
 1. Currently Supports Mifare Classic 1K
     * Read   (Plain text NDEF)
     * Write  (Plain text NDEF)
@@ -22,7 +22,7 @@ NFC based keyboard Wedge using PN532, RP2040W (Pico W), and a i2c 128x32 oled
 
 
 ---
-###Libraries:
+### Libraries:
 
   * [Adafruit TinyUSB](https://github.com/adafruit/Adafruit_TinyUSB_Arduino)
 
