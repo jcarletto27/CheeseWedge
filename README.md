@@ -22,7 +22,7 @@ NFC based keyboard Wedge using PN532, RP2040W (Pico W), and a i2c 128x32 oled
     * wifi.txt
       ```cpp
       SSID:YOUR_SSID_HERE
-      Pass:YOUR_PASS_HERE
+      PASS:YOUR_PASS_HERE
       ```
       
       
