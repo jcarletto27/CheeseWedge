@@ -40,3 +40,12 @@ NFC based keyboard Wedge using PN532, RP2040W (Pico W), and a i2c 128x32 oled
   * [Adafruit SSD1306](https://github.com/adafruit/Adafruit_SSD1306) 
   * [Adafruit GFX](https://github.com/adafruit/Adafruit-GFX-Library)
   * [AsyncTCP_RP2040W](https://github.com/khoih-prog/AsyncTCP_RP2040W)
+
+
+---
+
+### BOM
+* Arduino Pico W or equivalent RP2040W board
+* Elechouse PN532 NFC Board
+* .9 Inch 128x32 oled
+* 5x7 cm universal Perfboard with corner mounting holes
