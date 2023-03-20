@@ -40,6 +40,7 @@ NFC based keyboard Wedge using PN532, RP2040W (Pico W), and a i2c 128x32 oled
   * [Adafruit SSD1306](https://github.com/adafruit/Adafruit_SSD1306) 
   * [Adafruit GFX](https://github.com/adafruit/Adafruit-GFX-Library)
   * [AsyncTCP_RP2040W](https://github.com/khoih-prog/AsyncTCP_RP2040W)
+  * [CSV Parser](https://github.com/michalmonday/CSV-Parser-for-Arduino)
 
 
 ---
