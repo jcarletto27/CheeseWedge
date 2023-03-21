@@ -11,6 +11,8 @@ NFC based keyboard Wedge using PN532, RP2040W (Pico W), and a i2c 128x32 oled
 
 * HID Keyboard
 
+* Web Server
+   * Bulk Upload
 
 * 128x32 oled for Status and Read data
 
@@ -29,8 +31,7 @@ NFC based keyboard Wedge using PN532, RP2040W (Pico W), and a i2c 128x32 oled
 ## Planned Features
 * NTAG Support
    * Read
-* Web Server
-   * Bulk Upload
+
 
 ---
 ### Libraries:

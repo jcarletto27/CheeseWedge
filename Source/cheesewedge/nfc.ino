@@ -146,6 +146,35 @@ void nfcTagPolling() {
         }
 
       } else {
+        // if (uidLength == 7) {
+        //   Serial.println("Seems to be an NTAG2xx tag (7 byte UID)");
+        //   for (uint8_t i = 4; i < 16; i++) {
+        //     nfc.sendAck();
+        //     success = nfc.ntag2xx_ReadPage(i, data);
+        //     // success = nfc.mifareultralight_ReadPage(i, data);
+
+        //     // Display the current page number
+        //     Serial.print("PAGE ");
+        //     if (i < 10) {
+        //       Serial.print("0");
+        //       Serial.print(i);
+        //     } else {
+        //       Serial.print(i);
+        //     }
+        //     Serial.print(": ");
+
+        //     // Display the results, depending on 'success'
+        //     if (success) {
+        //       // Dump the page data
+        //       nfc.PrintHexChar(data, 4);
+        //     } else {
+        //       Serial.println("Unable to read the requested page!");
+        //     }
+        //   }
+        // } else {
+        //   Serial.println("This doesn't seem to be an NTAG203 tag (UUID length != 7 bytes)!");
+        // }
+        // }
         Serial.println("Ooops ... this doesn't seem to be a Mifare Classic card!");
       }
     }
@@ -271,25 +300,25 @@ void nfcTagPolling() {
 
     success = nfc.mifareclassic_AuthenticateBlock(uid, uidLength, 0, 0, keys[0]);
 
+    if (!success) {
+      for (int tryKey = 0; tryKey < 16; tryKey++) {
         if (!success) {
-          for (int tryKey = 0; tryKey < 16; tryKey++) {
-            if (!success) {
-              delay(10);
-              success = nfc.mifareclassic_AuthenticateBlock(uid, uidLength, 0, 0, keys[tryKey]);
-              if (success) {
-                sucKey = tryKey;
-                break;
-              }
-            } else {
-              //previous key was successful, do nothing
-            }
+          delay(10);
+          success = nfc.mifareclassic_AuthenticateBlock(uid, uidLength, 0, 0, keys[tryKey]);
+          if (success) {
+            sucKey = tryKey;
+            break;
           }
-        }
-        if (!success) {
-          Serial.println("Unable to authenticate block 0 to enable card formatting!");
         } else {
-          Serial.println("success in using Key " + sucKey);
+          //previous key was successful, do nothing
         }
+      }
+    }
+    if (!success) {
+      Serial.println("Unable to authenticate block 0 to enable card formatting!");
+    } else {
+      Serial.println("success in using Key " + sucKey);
+    }
 
     if (!success) {
       Serial.println("Unable to authenticate block 0 to enable card formatting!");
