@@ -17,6 +17,8 @@ NFC based keyboard Wedge using PN532, RP2040W (Pico W), and a i2c 128x32 oled
 
 * Web Server with input for writing to tag, Selecting Modes (Read, Write, Format)
 
+* Web Server
+   * Bulk Upload
 
 * USB Mass Storage Mode
     * wifi.txt
@@ -29,8 +31,7 @@ NFC based keyboard Wedge using PN532, RP2040W (Pico W), and a i2c 128x32 oled
 ## Planned Features
 * NTAG Support
    * Read
-* Web Server
-   * Bulk Upload
+
 
 ---
 ### Libraries:
