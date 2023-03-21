@@ -78,8 +78,6 @@ String trimString(String text) {  //Sanitize me
 }
 
 
-
-
 void updateWIFICreds(String txtContents) {
 
   strSSID = splitSubString(txtContents, "SSID:");

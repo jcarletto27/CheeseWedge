@@ -24,7 +24,8 @@ void setup() {
 
 
   Serial.begin(9600);
-  //while (!Serial) delay(10);  // wait for native usb
+  while (!Serial) delay(10);  // wait for native usb
+  //delay(2000);
   Serial.println("Serial is Live, Flash is Live, HID is Live");
 
 

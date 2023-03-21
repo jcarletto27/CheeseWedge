@@ -11,13 +11,14 @@
 
 String webServerAddress = "";
 
-char ssid[] = "";      // your network SSID (name)
+char ssid[] = "";  // your network SSID (name)
 char pass[] = "";  // your network password (use for WPA, or use as key for WEP), length must be 8+
 String strSSID = "";
 String strPass = "";
 int status = WL_IDLE_STATUS;
 AsyncWebServer server(80);
 const char* input_parameter1 = "input_string";
+const char* bulk_input_string = "bulk_input_string";
 const char index_html[] PROGMEM = R"rawliteral(
 <!DOCTYPE HTML><html><head>
   <title>Tag Writer</title>
@@ -44,6 +45,13 @@ const char index_html[] PROGMEM = R"rawliteral(
   <form action="/format">
   <input type="submit" value=" Format Mode "> 
   </form>
+  <br><br><br>
+  <form action="/bulk_write">
+    Bulk Write values: <textarea id="bulk_input_string" name="bulk_input_string" rows="4" cols="37" maxlength="3700" required="true"></textarea>
+    <input type="submit" value="Submit">
+  </form>
+  <br>
+  
 </body></html>)rawliteral";
 //-------------------------------------WEB Config-------------------------------------//
 
@@ -68,13 +76,37 @@ String contents = "";
 Adafruit_PN532 nfc(PN532_SCK, PN532_MISO, PN532_MOSI, PN532_SS);
 String opMode = "READ";
 String cardData = "enSAMPLE TEXT";
+uint8_t keys[][6] = { { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff },
+                      { 0xd3, 0xf7, 0xd3, 0xf7, 0xd3, 0xf7 },
+                      { 0xa0, 0xb0, 0xc0, 0xd0, 0xe0, 0xf0 },
+                      { 0xa1, 0xb1, 0xc1, 0xd1, 0xe1, 0xf1 },
+                      { 0xa0, 0xa1, 0xa2, 0xa3, 0xa4, 0xa5 },
+                      { 0xb0, 0xb1, 0xb2, 0xb3, 0xb4, 0xb5 },
+                      { 0x4d, 0x3a, 0x99, 0xc3, 0x51, 0xdd },
+                      { 0x1a, 0x98, 0x2c, 0x7e, 0x45, 0x9a },
+                      { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 },
+                      { 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff },                      
+                      { 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff },
+                      { 0x71, 0x4c, 0x5c, 0x88, 0x6e, 0x97 },
+                      { 0x58, 0x7e, 0xe5, 0xf9, 0x35, 0x0f },
+                      { 0xa0, 0x47, 0x8c, 0xc3, 0x90, 0x91 },
+                      { 0x53, 0x3c, 0xb6, 0xc7, 0x23, 0xf6 },
+                      { 0x8f, 0xd0, 0xa4, 0xf2, 0x56, 0xe9 } };
 uint8_t uid[] = { 0, 0, 0, 0, 0, 0, 0 };
 uint8_t lastReadUID[] = { 0, 0, 0, 0, 0, 0, 0 };
+uint8_t uidLength;  // Length of the UID (4 or 7 bytes depending on ISO14443A card type)
 bool ndefReady = false;
 String ndefData = "";
 int previousNDEF_Length = 0;
 bool hasWrittenToWedge = false;
 long millisLastRead = 0;
+String bulkWriteData = "";
+int bulkWriteArrayCount = 100;
+String bulkWriteArray[100];
+char delimiter_key = '\n';
+int currentBulkWriteIteration = 0;
+bool bulkWriteDataMode = false;
+String sucKey = "";
 //-------------------------------------NFC Config-------------------------------------//
 
 
