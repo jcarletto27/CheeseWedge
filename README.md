@@ -36,7 +36,7 @@ NFC based keyboard Wedge using PN532, RP2040W (Pico W), and a i2c 128x32 oled
 ### Libraries:
 
   * [Adafruit TinyUSB](https://github.com/adafruit/Adafruit_TinyUSB_Arduino)
-  * [Adafruit PN532](https://github.com/adafruit/Adafruit-PN532)
+  * [Adafruit PN532 - Modified for Text ndefs](https://github.com/jcarletto27/Adafruit-PN532)
   * [Adafruit SSD1306](https://github.com/adafruit/Adafruit_SSD1306) 
   * [Adafruit GFX](https://github.com/adafruit/Adafruit-GFX-Library)
   * [AsyncTCP_RP2040W](https://github.com/khoih-prog/AsyncTCP_RP2040W)
