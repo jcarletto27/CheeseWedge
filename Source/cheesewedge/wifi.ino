@@ -13,6 +13,7 @@ void checkWIFIStatus() {
 }
 
 void beginWifi() {
+  drawText("Connecting...", 2);
   if (strSSID != "" && strPass != "") {
     Serial.print(F("Connecting to SSID: "));
     Serial.println(strSSID);
@@ -34,6 +35,7 @@ void beginWifi() {
 
   while (status != WL_CONNECTED) {
     status = WiFi.status();
+    Serial.println("Failing to connect to wifi");
     delay(500);
   }
 

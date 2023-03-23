@@ -24,12 +24,13 @@ void setup() {
 
 
   Serial.begin(9600);
-  while (!Serial) delay(10);  // wait for native usb
+  initiateDisplay();  //i2c Display
+  //while (!Serial) delay(10);  // wait for native usb
   //delay(2000);
   Serial.println("Serial is Live, Flash is Live, HID is Live");
 
 
-  initiateDisplay();  //i2c Display
+  
 
 
   flashDetails();  //Print flash sizes and details

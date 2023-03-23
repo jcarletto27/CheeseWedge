@@ -5,7 +5,7 @@ void initiateDisplay() {
   if (!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
     Serial.println(F("SSD1306 allocation failed"));
   }
-
+  drawText("CheeseWedge", 1);
   maxLoops = 1;
   display.clearDisplay();
   currx = display.width();

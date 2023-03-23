@@ -110,73 +110,68 @@ void nfcTagPolling() {
         if ((currx * 2) < minX) currx = 20;
         speed = 2;
 
-
-        //Serial.flush();
         if (TinyUSBDevice.suspended() && ndefReady) {
-          // Wake up host if we are in suspend mode
-          // and REMOTE_WAKEUP feature is enabled by host
           TinyUSBDevice.remoteWakeup();
         }
 
-        // if (!usb_hid.ready()) {
-        //   Serial.print("HID not ready.....");
-        //   return;  //still transferring last call
-        // }
-        if (ndefReady && !hasWrittenToWedge) {
-          Serial.println("Is HID Ready? " + usb_hid.ready());
-          Serial.println("Printing NDEF Data ");
-          for (int iter = 0; iter < strlen(ndefData.c_str()); iter++) {
-            char c = ndefData[iter];
-            Serial.print(c);
-            usb_hid.keyboardPress(0, c);
-            delay(10);
-            usb_hid.keyboardRelease(0);
-            delay(10);
-          }
-          Serial.println("");
-          delay(10);
-          usb_hid.keyboardReport(0, 0, enter_keycode);
-          delay(10);
-          usb_hid.keyboardRelease(0);
-          ndefReady = false;
-          ndefData = "";
-          previousNDEF_Length = 0;
-          hasWrittenToWedge = true;
-          millisLastRead = millis();
-        }
+
+
 
       } else {
-        // if (uidLength == 7) {
-        //   Serial.println("Seems to be an NTAG2xx tag (7 byte UID)");
-        //   for (uint8_t i = 4; i < 16; i++) {
-        //     nfc.sendAck();
-        //     success = nfc.ntag2xx_ReadPage(i, data);
-        //     // success = nfc.mifareultralight_ReadPage(i, data);
+        if (uidLength == 7) {
+          char fullData[48];
+          Serial.println("Seems to be an NTAG2xx tag (7 byte UID)");
+          uint8_t data[48];
 
-        //     // Display the current page number
-        //     Serial.print("PAGE ");
-        //     if (i < 10) {
-        //       Serial.print("0");
-        //       Serial.print(i);
-        //     } else {
-        //       Serial.print(i);
-        //     }
-        //     Serial.print(": ");
+          int counter = 0;
 
-        //     // Display the results, depending on 'success'
-        //     if (success) {
-        //       // Dump the page data
-        //       nfc.PrintHexChar(data, 4);
-        //     } else {
-        //       Serial.println("Unable to read the requested page!");
-        //     }
-        //   }
-        // } else {
-        //   Serial.println("This doesn't seem to be an NTAG203 tag (UUID length != 7 bytes)!");
-        // }
-        // }
-        Serial.println("Ooops ... this doesn't seem to be a Mifare Classic card!");
+          for (uint8_t i = 4; i < 17; i++) {
+            nfc.sendAck();
+            success = nfc.ntag2xx_ReadPage(i, data);
+
+            if (success) {
+              for (int x = 0; x < 4; x++) {
+                fullData[counter] = (char)data[x];
+                counter++;
+              }
+            } else {
+              Serial.println("Unable to read the requested page!");
+            }
+          }
+
+          if (success && !hasWrittenToWedge) {
+            ndefData = processTextBytes(fullData);
+            Serial.println(ndefData);
+            ndefReady = true;
+          }
+        } else {
+          //Serial.println("This doesn't seem to be an NTAG203 tag (UUID length != 7 bytes)!");
+        }
+
+        //Serial.println("Ooops ... this doesn't seem to be a Mifare Classic card!");
       }
+    }
+    if (ndefReady && !hasWrittenToWedge) {
+
+      Serial.println("Printing NDEF Data ");
+      for (int iter = 0; iter < strlen(ndefData.c_str()); iter++) {
+        char c = ndefData[iter];
+        Serial.print(c);
+        usb_hid.keyboardPress(0, c);
+        delay(10);
+        usb_hid.keyboardRelease(0);
+        delay(10);
+      }
+      Serial.println("");
+      delay(10);
+      usb_hid.keyboardReport(0, 0, enter_keycode);
+      delay(10);
+      usb_hid.keyboardRelease(0);
+      ndefReady = false;
+      ndefData = "";
+      previousNDEF_Length = 0;
+      hasWrittenToWedge = true;
+      millisLastRead = millis();
     }
   }
   if (opMode == "WRITE") {  //Write Mode
@@ -365,4 +360,29 @@ uint8_t authenticateBlock(uint32_t block, int firstKey) {
     Serial.println("success in using Key " + sucKey);
   }
   return success;
+}
+
+String processTextBytes(char textBytes[]) {
+  int length = strlen(textBytes);
+
+  String retValues = "";
+  bool foundStart = false;
+  for (uint8_t i = 0; i < length; i++) {
+
+    if (textBytes[i] == 0x54 && textBytes[i + 1] == 0x02) {
+      Serial.println("Found start of text block");
+      //found a text record
+      i = i + 4;  //skip this record, the 0x02, and the E(0x65) N(0x6E)
+      foundStart = true;
+    }
+
+    if (foundStart && textBytes[i] != 0xFE) {
+      retValues = retValues + textBytes[i];
+    }
+
+    if (textBytes[i] == 0xFE) {
+      Serial.println("Found end of text block");
+    }
+  }
+  return trimString(retValues);
 }
